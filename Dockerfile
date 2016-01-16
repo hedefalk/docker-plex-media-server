@@ -11,6 +11,7 @@ RUN useradd --system --uid 797 -M --shell /usr/sbin/nologin plex \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
+        unzip \
  && DOWNLOAD_URL=`curl -Ls https://plex.tv/downloads \
     | grep -o '[^"'"'"']*amd64.deb' \
     | grep -v binaries` \
@@ -21,8 +22,13 @@ RUN useradd --system --uid 797 -M --shell /usr/sbin/nologin plex \
  && dpkg -i plexmediaserver.deb \
  && rm -f plexmediaserver.deb \
  && rm -f /bin/start \
+ && SUB_ZERO_ZIP=`find /usr/lib/plexmediaserver/Resources/ -name 'Plug-ins*'`/Sub-Zero.bundle.zip \
+ && curl -L https://github.com/pannal/Sub-Zero.bundle/releases/download/1.3.23.459/Sub-Zero.bundle-1.3.23.459.zip -o $SUB_ZERO_ZIP \
+ && unzip $SUB_ZERO_ZIP \
+ && rm -f $SUB_ZERO_ZIP \
  && apt-get purge -y --auto-remove \
         curl \
+        unzip \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* \
  && mkdir /config \
